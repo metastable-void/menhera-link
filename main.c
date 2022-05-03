@@ -19,6 +19,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "tiny-AES-c/aes.h"
+#include "libeddsa/lib/eddsa.h"
+
 #define BUFFLEN (65536)
 #define ADDR_LENGTH_INET (8)
 
