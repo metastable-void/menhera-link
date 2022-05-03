@@ -89,6 +89,7 @@ int main(int argc, char ** argv) {
     struct sockaddr_in remote_addr;
     int local_port = 0;
     int remote_port = 0;
+    size_t slen = sizeof(struct sockaddr_in);
 
     if (argc < 5) {
         fprintf(stderr, "argc\n");
@@ -134,7 +135,7 @@ int main(int argc, char ** argv) {
                 fprintf(stderr, "recvfrom(tunfd)\n");
                 return 1;
             }
-            len = sendto(sockfd, buf, len, 0, (struct sockaddr*)&remote_addr, ADDR_LENGTH_INET);
+            len = sendto(sockfd, buf, len, 0, (struct sockaddr*)&remote_addr, slen);
             fprintf(stderr, "sendto: %ld\n", len);
         }
     }
