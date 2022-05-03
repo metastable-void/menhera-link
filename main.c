@@ -126,16 +126,16 @@ int main(int argc, char ** argv) {
                 fprintf(stderr, "recvfrom(sockfd)\n");
                 return 1;
             }
+            len = write(tunfd, buf, len);
             fprintf(stderr, "recvfrom: %ld\n", len);
-            write(tunfd, buf, len);
         }
         if (FD_ISSET(tunfd, &rfds)) {
             size_t len;
             if ((len = read(tunfd, buf, BUFFLEN)) < 0) {
-                fprintf(stderr, "recvfrom(tunfd)\n");
+                fprintf(stderr, "read(tunfd)\n");
                 return 1;
             }
-            len = sendto(sockfd, buf, len, 0, (struct sockaddr*)&remote_addr, slen);
+            len = sendto(sockfd, buf, len, MSG_DONTWAIT, (struct sockaddr*)&remote_addr, slen);
             fprintf(stderr, "sendto: %ld\n", len);
         }
     }
