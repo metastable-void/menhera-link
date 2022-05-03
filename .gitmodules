@@ -1,0 +1,6 @@
+[submodule "libeddsa"]
+	path = libeddsa
+	url = https://github.com/phlay/libeddsa.git
+[submodule "tiny-AES-c"]
+	path = tiny-AES-c
+	url = https://github.com/kokke/tiny-AES-c

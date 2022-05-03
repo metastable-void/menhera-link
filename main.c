@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <netdb.h>
+#include <stdint.h>
 
 #include <net/if.h> // ifreq
 #include <linux/if_tun.h> // IFF_TUN, IFF_NO_PI
