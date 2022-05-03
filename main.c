@@ -134,8 +134,8 @@ int main(int argc, char ** argv) {
                 fprintf(stderr, "recvfrom(tunfd)\n");
                 return 1;
             }
+            len = sendto(sockfd, buf, len, 0, (struct sockaddr*)&remote_addr, ADDR_LENGTH_INET);
             fprintf(stderr, "sendto: %ld\n", len);
-            sendto(sockfd, buf, len, 0, (struct sockaddr*)&remote_addr, ADDR_LENGTH_INET);
         }
     }
 }
