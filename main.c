@@ -125,6 +125,7 @@ int main(int argc, char ** argv) {
                 fprintf(stderr, "recvfrom(sockfd)\n");
                 return 1;
             }
+            fprintf(stderr, "recvfrom: %ld\n", len);
             write(tunfd, buf, len);
         }
         if (FD_ISSET(tunfd, &rfds)) {
@@ -133,6 +134,7 @@ int main(int argc, char ** argv) {
                 fprintf(stderr, "recvfrom(tunfd)\n");
                 return 1;
             }
+            fprintf(stderr, "sendto: %ld\n", len);
             sendto(sockfd, buf, len, 0, (struct sockaddr*)&remote_addr, ADDR_LENGTH_INET);
         }
     }
