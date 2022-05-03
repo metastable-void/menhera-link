@@ -121,27 +121,31 @@ int main(int argc, char ** argv) {
         maxfd = sockfd > tunfd ? sockfd : tunfd;
         select(maxfd + 1, &rfds, NULL, NULL, NULL);
         if (FD_ISSET(sockfd, &rfds)) {
-            size_t len;
-            if ((len = recvfrom(sockfd, buf, BUFFLEN, MSG_DONTWAIT, NULL, 0)) < 0) {
+            size_t len_received, len_written;
+            len_received = recvfrom(sockfd, buf, BUFFLEN, MSG_DONTWAIT, NULL, 0);
+            if (len_received < 0) {
                 fprintf(stderr, "recvfrom(sockfd) failed\n");
-                return 1;
+            } else {
+                len_written = write(tunfd, buf, len_received);
+                if (len_written < 0) {
+                    fprintf(stderr, "write(tunfd) failed\n");
+                } else if (len_written < len_received) {
+                    fprintf(stderr, "Only %ld/%ld bytes written\n", len_written, len_received);
+                }
             }
-            len = write(tunfd, buf, len);
-            if (len < 0) {
-                fprintf(stderr, "write(tunfd) failed\n");
-            }
-            //fprintf(stderr, "recvfrom: %ld\n", len);
         }
         if (FD_ISSET(tunfd, &rfds)) {
-            size_t len;
-            if ((len = read(tunfd, buf, BUFFLEN)) < 0) {
+            size_t len_read, len_sent;
+            len_read = read(tunfd, buf, BUFFLEN);
+            if (len_read < 0) {
                 fprintf(stderr, "read(tunfd) failed\n");
-                return 1;
-            }
-            len = sendto(sockfd, buf, len, MSG_DONTWAIT, (struct sockaddr*)&remote_addr, slen);
-            //fprintf(stderr, "sendto: %ld\n", len);
-            if (len < 0) {
-                fprintf(stderr, "sendto(sockfd) failed\n");
+            } else {
+                len_sent = sendto(sockfd, buf, len_read, MSG_DONTWAIT, (struct sockaddr*)&remote_addr, slen);
+                if (len_sent < 0) {
+                    fprintf(stderr, "sendto(sockfd) failed\n");
+                } else if (len_sent < len_read) {
+                    fprintf(stderr, "Only %ld/%ld bytes sent\n", len_sent, len_read);
+                }
             }
         }
     }
