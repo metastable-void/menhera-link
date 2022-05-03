@@ -127,7 +127,10 @@ int main(int argc, char ** argv) {
                 return 1;
             }
             len = write(tunfd, buf, len);
-            fprintf(stderr, "recvfrom: %ld\n", len);
+            if (len < 0) {
+                fprintf(stderr, "write(tunfd) failed\n");
+            }
+            //fprintf(stderr, "recvfrom: %ld\n", len);
         }
         if (FD_ISSET(tunfd, &rfds)) {
             size_t len;
@@ -136,7 +139,10 @@ int main(int argc, char ** argv) {
                 return 1;
             }
             len = sendto(sockfd, buf, len, MSG_DONTWAIT, (struct sockaddr*)&remote_addr, slen);
-            fprintf(stderr, "sendto: %ld\n", len);
+            //fprintf(stderr, "sendto: %ld\n", len);
+            if (len < 0) {
+                fprintf(stderr, "sendto(sockfd) failed\n");
+            }
         }
     }
 }
