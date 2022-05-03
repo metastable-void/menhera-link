@@ -26,7 +26,7 @@ int tun_alloc(char *dev)
     struct ifreq ifr;
     int fd, err;
 
-    if ((fd = open("/dev/net/tun", O_RDWR)) < 0) {
+    if ((fd = open("/dev/net/tun", O_RDWR | O_NONBLOCK)) < 0) {
         fprintf(stderr, "open(/dev/net/tun)\n");
         return -1;
     }
@@ -123,7 +123,7 @@ int main(int argc, char ** argv) {
         if (FD_ISSET(sockfd, &rfds)) {
             size_t len;
             if ((len = recvfrom(sockfd, buf, BUFFLEN, MSG_DONTWAIT, NULL, 0)) < 0) {
-                fprintf(stderr, "recvfrom(sockfd)\n");
+                fprintf(stderr, "recvfrom(sockfd) failed\n");
                 return 1;
             }
             len = write(tunfd, buf, len);
@@ -135,7 +135,7 @@ int main(int argc, char ** argv) {
         if (FD_ISSET(tunfd, &rfds)) {
             size_t len;
             if ((len = read(tunfd, buf, BUFFLEN)) < 0) {
-                fprintf(stderr, "read(tunfd)\n");
+                fprintf(stderr, "read(tunfd) failed\n");
                 return 1;
             }
             len = sendto(sockfd, buf, len, MSG_DONTWAIT, (struct sockaddr*)&remote_addr, slen);
